@@ -16,3 +16,4 @@ async function createUser({
       throw error;
     }
   }
+  module.exports = {createUser}
