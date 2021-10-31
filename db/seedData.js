@@ -1,10 +1,14 @@
 // require in the database adapter functions as you write them (createUser, createActivity...)
 // const { } = require('./');
 
-const {createUser} = require("./");
+const {
+  createUser,
+  // getAllActivities,
+  createActivity,
+  // getRoutinesWithoutActivities,
+} = require("./");
 
 const client = require("./client");
-
 
 async function dropTables() {
   console.log("Dropping All Tables...");
@@ -256,5 +260,5 @@ async function rebuildDB() {
 }
 
 module.exports = {
-  rebuildDB
+  rebuildDB,
 };
