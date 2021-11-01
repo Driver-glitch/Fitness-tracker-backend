@@ -4,7 +4,7 @@ DO NOT CHANGE THIS FILE
 require("dotenv").config();
 const bcrypt = require("bcrypt");
 const SALT_COUNT = 10;
-
+   
 const { rebuildDB } = require("../db/seedData");
 const {
   getUserById,
