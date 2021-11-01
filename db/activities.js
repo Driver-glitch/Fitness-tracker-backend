@@ -54,4 +54,5 @@ async function createActivity({ name, description }) {
 module.exports = {
   attachActivitiesToRoutines,
   createActivity,
+
 };

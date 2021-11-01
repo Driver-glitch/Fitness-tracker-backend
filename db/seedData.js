@@ -10,7 +10,6 @@ const {
 
 const client = require("./client");
 
-
 async function dropTables() {
   console.log("Dropping All Tables...");
   // drop all tables, in the correct order
@@ -265,4 +264,6 @@ async function rebuildDB() {
 
 module.exports = {
   rebuildDB,
+
 };
+

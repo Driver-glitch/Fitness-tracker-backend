@@ -13,7 +13,7 @@ async function createUser({ username, password }) {
       `,
       [username, password]
     );
-   
+
     return user;
   } catch (error) {
     throw error;
@@ -37,3 +37,4 @@ async function createUser({ username, password }) {
 // }
 
 module.exports = { createUser };
+
