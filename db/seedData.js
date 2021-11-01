@@ -1,4 +1,4 @@
-// require in the database adapter functions as you write them (createUser, createActivity...)
+//require in the database adapter functions as you write them (createUser, createActivity...)
 // const { } = require('./');
 
 const {
@@ -69,11 +69,14 @@ async function createTables() {
   // have to make sure to drop in correct order
 }
 
+
+
 /* 
 
 DO NOT CHANGE ANYTHING BELOW. This is default seed data, and will help you start testing, before getting to the tests. 
 
 */
+
 
 async function createInitialUsers() {
   console.log("Starting to create users...");
@@ -261,4 +264,6 @@ async function rebuildDB() {
 
 module.exports = {
   rebuildDB,
+
 };
+
