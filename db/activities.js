@@ -87,4 +87,6 @@ module.exports = {
   createActivity,
   getAllActivities,
   updateActivity,
+
 };
+
