@@ -1,5 +1,8 @@
 
-// Do we need a require?
+// Do we need a require? 
+//const client = require("./client");
+
+
 
 async function getRoutineById(id) {
     try {
