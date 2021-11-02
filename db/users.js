@@ -21,18 +21,28 @@ async function createUser({ username, password }) {
 }
 
 async function getUser({ username, password }) {
+  if (!username || !password) {
+    return;
+  }
   try {
     const {
       rows: [user],
     } = await client.query(
       `
       SELECT * FROM users
-      WHERE username=$1 AND password=$2;
-      
+      WHERE username=$1 
+    ;
       `,
 
-      [username, password]
+      [username]
     );
+    if (!user) {
+      return;
+    }
+    if (user.password !== password) {
+      return;
+    }
+    console.log(user);
     // Needs to delete password but also do the other thing...
     delete user.password;
     return user;
