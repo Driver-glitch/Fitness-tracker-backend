@@ -4,7 +4,7 @@ DO NOT CHANGE THIS FILE
 require("dotenv").config();
 const bcrypt = require("bcrypt");
 const SALT_COUNT = 10;
-   
+
 const { rebuildDB } = require("../db/seedData");
 const {
   getUserById,
@@ -53,10 +53,10 @@ describe("Database", () => {
         expect(userToCreateAndUpdate.username).toBe(userCredentials.username);
         expect(queriedUser.username).toBe(userCredentials.username);
       });
-      it("EXTRA CREDIT: Does not store plaintext password in the database", async () => {
+      xit("EXTRA CREDIT: Does not store plaintext password in the database", async () => {
         expect(queriedUser.password).not.toBe(userCredentials.password);
       });
-      it("EXTRA CREDIT: Hashes the password (salted 10 times) before storing it to the database", async () => {
+      xit("EXTRA CREDIT: Hashes the password (salted 10 times) before storing it to the database", async () => {
         const hashedVersion = bcrypt.compareSync(
           userCredentials.password,
           queriedUser.password
@@ -67,7 +67,7 @@ describe("Database", () => {
         expect(userToCreateAndUpdate.password).toBeFalsy();
       });
     });
-    xdescribe("getUser({ username, password })", () => {
+    describe("getUser({ username, password })", () => {
       let verifiedUser;
       beforeAll(async () => {
         verifiedUser = await getUser(userCredentials);
@@ -85,7 +85,7 @@ describe("Database", () => {
         expect(verifiedUser.password).toBeFalsy();
       });
     });
-    xdescribe("getUserById", () => {
+    describe("getUserById", () => {
       it("Gets a user based on the user Id", async () => {
         const user = await getUserById(userToCreateAndUpdate.id);
         expect(user).toBeTruthy();
@@ -93,7 +93,7 @@ describe("Database", () => {
       });
     });
   });
-  xdescribe("Activities", () => {
+  describe("Activities", () => {
     describe("getAllActivities", () => {
       it("selects and returns an array of all activities", async () => {
         const activities = await getAllActivities();
@@ -103,7 +103,7 @@ describe("Database", () => {
         expect(activities).toEqual(activitiesFromDatabase);
       });
     });
-    xdescribe("createActivity({ name, description })", () => {
+    describe("createActivity({ name, description })", () => {
       it("Creates and returns the new activity", async () => {
         const activityToCreate = {
           name: "elliptical",
@@ -114,7 +114,7 @@ describe("Database", () => {
         expect(createdActivity.description).toBe(activityToCreate.description);
       });
     });
-    xdescribe("updateActivity", () => {
+    describe("updateActivity", () => {
       it("Updates name and description of an activity without affecting the ID. Returns the updated Activity.", async () => {
         const [activityToUpdate] = await getAllActivities();
         activityToUpdate.name = "standing barbell curl";
@@ -453,6 +453,4 @@ describe("Database", () => {
       });
     });
   });
-
 });
-

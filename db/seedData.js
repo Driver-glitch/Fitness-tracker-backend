@@ -3,9 +3,13 @@
 
 const {
   createUser,
-  // getAllActivities,
+  getUser,
+  getUserById,
+  getUserByUsername,
+  createRoutine,
   createActivity,
-  // getRoutinesWithoutActivities,
+  getAllActivities,
+  updateActivity,
 } = require("./");
 
 const client = require("./client");
@@ -69,14 +73,11 @@ async function createTables() {
   // have to make sure to drop in correct order
 }
 
-
-
 /* 
 
 DO NOT CHANGE ANYTHING BELOW. This is default seed data, and will help you start testing, before getting to the tests. 
 
 */
-
 
 async function createInitialUsers() {
   console.log("Starting to create users...");
@@ -255,7 +256,7 @@ async function rebuildDB() {
     await createInitialUsers();
     await createInitialActivities();
     await createInitialRoutines();
-    await createInitialRoutineActivities();
+    // await createInitialRoutineActivities();
   } catch (error) {
     console.log("Error during rebuildDB");
     throw error;
@@ -264,6 +265,4 @@ async function rebuildDB() {
 
 module.exports = {
   rebuildDB,
-
 };
-

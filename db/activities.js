@@ -51,8 +51,40 @@ async function createActivity({ name, description }) {
   }
 }
 
+async function getAllActivities() {
+  try {
+    const { rows } = await client.query(`
+    SELECT * FROM activities;
+    `);
+
+    return rows;
+  } catch (error) {
+    throw error;
+  }
+}
+
+async function updateActivity({ id, name, description }) {
+  try {
+    const {
+      rows: [activity],
+    } = await client.query(
+      `
+    UPDATE activities
+    SET name = '${name}',  description = '${description}'
+    WHERE id=${id}
+    RETURNING *;
+    `,
+      [id, name, description]
+    );
+    return activity;
+  } catch (error) {
+    throw error;
+  }
+}
+
 module.exports = {
   attachActivitiesToRoutines,
   createActivity,
-
+  getAllActivities,
+  updateActivity,
 };
