@@ -1,4 +1,5 @@
 const client = require("./client");
+const { dbFields } = require("./util");
 
 async function attachActivitiesToRoutines(routines) {
   // no side effects
@@ -63,18 +64,20 @@ async function getAllActivities() {
   }
 }
 
-async function updateActivity({ id, name, description }) {
+async function updateActivity({ id, ...fields }) {
   try {
+    const result = dbFields(fields);
+    console.log(result, "Results form update activity");
     const {
       rows: [activity],
     } = await client.query(
       `
     UPDATE activities
-    SET name = '${name}',  description = '${description}'
+    SET ${result.insert}
     WHERE id=${id}
     RETURNING *;
     `,
-      [id, name, description]
+      result.vals
     );
     return activity;
   } catch (error) {
