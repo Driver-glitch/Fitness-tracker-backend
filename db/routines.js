@@ -1,5 +1,7 @@
+
 // Do we need a require? 
 //const client = require("./client");
+
 
 
 async function getRoutineById(id) {
@@ -72,4 +74,5 @@ module.exports = {
   createRoutine,
   updateRoutine,
   destroyRoutine,
+
 };
