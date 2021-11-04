@@ -10,6 +10,9 @@ const {
   createActivity,
   getAllActivities,
   updateActivity,
+  getActivityById,
+  getRoutinesWithoutActivities,
+  addActivityToRoutine,
 } = require("./");
 
 const client = require("./client");
@@ -256,7 +259,7 @@ async function rebuildDB() {
     await createInitialUsers();
     await createInitialActivities();
     await createInitialRoutines();
-    // await createInitialRoutineActivities();
+    await createInitialRoutineActivities();
   } catch (error) {
     console.log("Error during rebuildDB");
     throw error;
