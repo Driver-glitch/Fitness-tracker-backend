@@ -85,11 +85,25 @@ async function updateActivity({ id, ...fields }) {
   }
 }
 
+async function getActivityById(id) {
+  try {
+    const { rows } = await client.query(
+      `
+    SELECT * FROM activities
+    WHERE id=$1;
+    `,
+      [id]
+    );
+    return rows;
+  } catch (error) {
+    throw error;
+  }
+}
+
 module.exports = {
   attachActivitiesToRoutines,
   createActivity,
   getAllActivities,
   updateActivity,
-
+  getActivityById,
 };
-
