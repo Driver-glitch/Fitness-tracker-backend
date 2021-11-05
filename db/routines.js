@@ -1,6 +1,7 @@
 // Do we need a require?
 const client = require("./client");
 const { attachActivitiesToRoutines } = require("./activities");
+const { getUserByUsername } = require("./users");
 
 async function getRoutineById(id) {
   try {
@@ -44,10 +45,72 @@ async function getAllRoutines() {
   }
 }
 
-async function getAllPublicRoutines() {}
-async function getAllRoutinesByUser() {}
-async function getPublicRoutinesByUser() {}
-async function getPublicRoutinesByActivity() {}
+async function getAllPublicRoutines() {
+  try {
+    const { rows: routines } = await client.query(`
+    SELECT routines.*, users.username AS "creatorName" 
+    FROM routines 
+    JOIN users ON routines."creatorId"=users.id
+    WHERE "isPublic"='true';
+    `);
+
+    return attachActivitiesToRoutines(routines);
+  } catch (error) {
+    throw error;
+  }
+}
+async function getAllRoutinesByUser({ username }) {
+  try {
+    const user = await getUserByUsername(username);
+    const { rows: routines } = await client.query(
+      `
+    SELECT routines.*, users.username AS "creatorName" 
+    FROM routines 
+    JOIN users ON routines."creatorId"=users.id
+    WHERE "creatorId"=$1;
+    `,
+      [user.id]
+    );
+
+    return attachActivitiesToRoutines(routines);
+  } catch (error) {
+    throw error;
+  }
+}
+async function getPublicRoutinesByUser({ username }) {
+  try {
+    const user = await getUserByUsername(username);
+    const { rows: routines } = await client.query(
+      `
+    SELECT routines.*, users.username AS "creatorName" 
+    FROM routines 
+    JOIN users ON routines."creatorId"=users.id
+    WHERE "creatorId"=$1 AND "isPublic"='true';
+    `,
+      [user.id]
+    );
+
+    return attachActivitiesToRoutines(routines);
+  } catch (error) {
+    throw error;
+  }
+}
+async function getPublicRoutinesByActivity({ id }) {
+  try {
+    const { rows: routines } = await client.query(
+      `
+    SELECT routines.*, users.username AS "creatorName" 
+    FROM routines 
+    JOIN users ON routines."creatorId"=users.id
+    WHERE "isPublic"='true';
+
+    `
+    );
+    return attachActivitiesToRoutines(routines);
+  } catch (error) {
+    throw error;
+  }
+}
 
 async function createRoutine({ creatorId, isPublic, name, goal }) {
   try {
