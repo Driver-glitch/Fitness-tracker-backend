@@ -333,7 +333,7 @@ describe("Database", () => {
         expect(routineToCreateAndUpdate).toEqual(queriedRoutine);
       });
     });
-    xdescribe("updateRoutine", () => {
+    describe("updateRoutine", () => {
       let queriedRoutine;
       beforeAll(async () => {
         routineToCreateAndUpdate = await updateRoutine({
@@ -367,7 +367,7 @@ describe("Database", () => {
         expect(routineToCreateAndUpdate.goal).toBe(queriedRoutine.goal);
       });
     });
-    xdescribe("destroyRoutine", () => {
+    describe("destroyRoutine", () => {
       it("removes routine from database", async () => {
         await destroyRoutine(routineToCreateAndUpdate.id);
         const {
@@ -418,7 +418,7 @@ describe("Database", () => {
         );
       });
     });
-    xdescribe("updateRoutineActivity({ id, count, duration })", () => {
+    describe("updateRoutineActivity({ id, count, duration })", () => {
       it("Finds the routine with id equal to the passed in id. Updates the count or duration as necessary.", async () => {
         const newRoutineActivityData = {
           id: routineActivityToCreateAndUpdate.id,
@@ -439,7 +439,7 @@ describe("Database", () => {
         );
       });
     });
-    xdescribe("destroyRoutineActivity(id)", () => {
+    describe("destroyRoutineActivity(id)", () => {
       it("remove routine_activity from database", async () => {
         const deletedRoutine = await destroyRoutineActivity(
           routineActivityToCreateAndUpdate.id

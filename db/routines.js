@@ -2,6 +2,7 @@
 const client = require("./client");
 const { attachActivitiesToRoutines } = require("./activities");
 const { getUserByUsername } = require("./users");
+const { dbFields } = require("./util");
 
 async function getRoutineById(id) {
   try {
@@ -130,8 +131,36 @@ async function createRoutine({ creatorId, isPublic, name, goal }) {
     throw error;
   }
 }
-async function updateRoutine() {}
-async function destroyRoutine() {}
+async function updateRoutine({ id, ...fields }) {
+  try {
+    const result = dbFields(fields);
+    const {
+      rows: [routine],
+    } = await client.query(
+      `
+    UPDATE routines
+    SET ${result.insert}
+    WHERE id=${id}
+    RETURNING *;
+    `,
+      result.vals
+    );
+    return routine;
+  } catch (error) {
+    throw error;
+  }
+}
+async function destroyRoutine(id) {
+  try {
+    await client.query(`
+    DELETE FROM routines
+    WHERE id=${id}
+    RETURNING *;  
+  `);
+  } catch (error) {
+    throw error;
+  }
+}
 
 module.exports = {
   getRoutineById,
