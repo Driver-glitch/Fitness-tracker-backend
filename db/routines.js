@@ -3,6 +3,7 @@ const client = require("./client");
 const { attachActivitiesToRoutines } = require("./activities");
 const { getUserByUsername } = require("./users");
 const { dbFields } = require("./util");
+const { destroyRoutineActivity } = require("./routines_activities");
 
 async function getRoutineById(id) {
   try {
@@ -152,11 +153,18 @@ async function updateRoutine({ id, ...fields }) {
 }
 async function destroyRoutine(id) {
   try {
-    await client.query(`
+    await destroyRoutineActivity(id);
+    const {
+      rows: [routine],
+    } = await client.query(
+      `
     DELETE FROM routines
-    WHERE id=${id}
+    WHERE id=$1
     RETURNING *;  
-  `);
+  `,
+      [id]
+    );
+    return routine;
   } catch (error) {
     throw error;
   }
