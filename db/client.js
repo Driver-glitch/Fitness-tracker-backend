@@ -9,4 +9,4 @@ const client = new Client({
       : undefined,
 });
 
-module.exports = client;
+module.exports = { client };
