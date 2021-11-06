@@ -1,27 +1,34 @@
 // create the express server here
 require("dotenv").config();
+
 const { PORT = 3000 } = process.env;
+
 const express = require("express");
 const server = express();
-server.use(express.json());
 
-const { apiRouter } = require("./api");
-server.use("/api", apiRouter);
+const cors = require("cors");
+server.use(cors());
 
 const morgan = require("morgan");
 server.use(morgan("dev"));
 
 server.use(express.json());
 
-server.use((req, res, next) => {
-  console.log("<____Body Logger START____>");
-  console.log(req.body);
-  console.log("<____Body Logger END____>");
+server.use("/api", require("./api"));
+// below is the same as above
+// const apiRouter = require("./api");
+// server.use("/api", apiRouter);
 
-  next();
+server.use("*", (req, res, next) => {
+  res.status(404).send({ error: "route not found" });
 });
 
-const { client } = require("./db");
+server.use((error, req, res, next) => {
+  res.status(500).send({ error: error.message });
+});
+
+const client = require("./db/client");
+
 client.connect();
 
 server.listen(PORT, () => {
