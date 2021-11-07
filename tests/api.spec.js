@@ -44,7 +44,7 @@ describe("API", () => {
     expect(typeof res.data.message).toEqual("string");
   });
 
-  xdescribe("Users", () => {
+  describe("Users", () => {
     let newUser = { username: "robert", password: "bobbylong321" };
     let newUserShortPassword = { username: "robertShort", password: "bobby21" };
     describe("POST /users/register", () => {
@@ -105,7 +105,7 @@ describe("API", () => {
         expect(tooShortResponse.data).toBeTruthy();
       });
     });
-    xdescribe("POST /users/login", () => {
+    describe("POST /users/login", () => {
       it("Logs in the user. Requires username and password, and verifies that hashed login password matches the saved hashed password.", async () => {
         const { data } = await axios.post(
           `${API_URL}/api/users/login`,
@@ -120,7 +120,7 @@ describe("API", () => {
         expect(parsedToken.username).toEqual(registeredUser.username);
       });
     });
-    xdescribe("GET /users/me", () => {
+    describe("GET /users/me", () => {
       it("sends back users data if valid token is supplied in header", async () => {
         const { data } = await axios.get(`${API_URL}/api/users/me`, {
           headers: { Authorization: `Bearer ${token}` },

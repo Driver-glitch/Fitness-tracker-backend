@@ -15,9 +15,7 @@ server.use(morgan("dev"));
 server.use(express.json());
 
 server.use("/api", require("./api"));
-// below is the same as above
-// const apiRouter = require("./api");
-// server.use("/api", apiRouter);
+
 
 server.use("*", (req, res, next) => {
   res.status(404).send({ error: "route not found" });
