@@ -22,7 +22,7 @@
   ],
   "author": "Fullstack Academy",
   "devDependencies": {
-    "nodemon": "^2.0.4"
+    "nodemon": "^2.0.14"
   },
   "dependencies": {
     "axios": "^0.24.0",

@@ -85,6 +85,21 @@ async function getUserByUsername(username) {
   }
 }
 
+// // inside of createUser({ username, password})
+// const SALT_COUNT = 10;
+// const hashedPassword = await bcrypt.hash(password, SALT_COUNT);
+
+// // inside of getUser({username, password})
+// const user = await getUserByUsername(username);
+// const hashedPassword = user.password;
+// const passwordsMatch = await bcrypt.compare(password, hashedPassword);
+// if (passwordsMatch) {
+//   // return the user object (without the password)
+// } else {
+//   throw SomeError;
+// }
+
+
 module.exports = {
   createUser,
   getUserById,
