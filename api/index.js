@@ -3,40 +3,7 @@ const apiRouter = express.Router();
 const client = require("../db/client");
 const jwt = require("jsonwebtoken");
 const { JWT_SECRET = "neverTell" } = process.env;
-// apiRouter.use((req, res, next) => {
-//     if (req.user) {
-//       console.log("User is set:", req.user);
-//     }
-//     next();
-//   });
-
-apiRouter.use(async (req, res, next) => {
-  const prefix = "Bearer ";
-  const auth = req.header("Authorization");
-
-  if (!auth) {
-    // nothing to see here
-    next();
-  } else if (auth.startsWith(prefix)) {
-    const token = auth.slice(prefix.length);
-
-    try {
-      const { id } = jwt.verify(token, JWT_SECRET);
-
-      if (id) {
-        req.user = await getUserById(id);
-        next();
-      }
-    } catch ({ name, message }) {
-      next({ name, message });
-    }
-  } else {
-    next({
-      name: "AuthorizationHeaderError",
-      message: `Authorization token must start with ${prefix}`,
-    });
-  }
-});
+const { getUserByUsername } = require("../db/users");
 
 apiRouter.get("/health", async (req, res, next) => {
   try {
@@ -47,8 +14,38 @@ apiRouter.get("/health", async (req, res, next) => {
     next(error);
   }
 });
+
+apiRouter.use("/", async (req, res, next) => {
+  const auth = req.header("Authorization");
+
+  if (!auth) {
+    return next();
+  }
+
+  if (auth.startsWith("Bearer ")) {
+    const token = auth.slice("Bearer ".length);
+
+    try {
+      const { username } = verify(token, JWT_SECRET);
+
+      if (username) {
+        req.user = await getUserByUsername(username);
+        return next();
+      }
+    } catch ({ name, message }) {
+      next({ name, message });
+    }
+  } else {
+    next({ name: "AuthError", message: "Error in authorization format" });
+  }
+});
+
 const usersRouter = require("./users");
 apiRouter.use("/users", usersRouter);
+
+const activityRouter = require("./activities");
+apiRouter.use("/activities", activityRouter);
+
 apiRouter.use((error, req, res, next) => {
   res.send(error);
 });
