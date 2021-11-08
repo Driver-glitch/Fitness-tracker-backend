@@ -1,10 +1,11 @@
 const express = require("express");
-const { requireUser } = require("../api/utils");
 const {
   createActivity,
   getAllActivities,
   updateActivity,
 } = require("../db/activities");
+const { getPublicRoutinesByActivity } = require("../db/routines");
+const { requireUser } = require("./utils");
 const activityRouter = express.Router();
 
 activityRouter.get("/", async (req, res, next) => {
@@ -20,25 +21,53 @@ activityRouter.get("/", async (req, res, next) => {
   }
 });
 
-activityRouter.post("/", async (req, res, next) => {
-  console.log(req, "<<<<<<<<<request<<<");
+activityRouter.post("/", requireUser, async (req, res, next) => {
   try {
-    const newActivity = await createActivity(name, description);
+    const { name, description } = req.body;
 
-    res.send(newActivity);
-  } catch (error) {
-    next(error);
+    if (name && description) {
+      const createdActivity = await createActivity({ name, description });
+      res.send(createdActivity);
+    } else {
+      res.send({ message: "Missing fields" });
+    }
+  } catch ({ name, message }) {
+    next({ name, message });
   }
 });
 
-activityRouter.patch("/:activityId", updateActivity, async (req, res, next) => {
+activityRouter.patch("/:activityId", async (req, res, next) => {
   const { name, description } = req.body;
   const { activityId } = req.params;
-  console.log(name);
+
   try {
-    const updatedActivity = await updateActivity(na);
-  } catch (error) {
-    next(error);
+    if ((activityId, name, description)) {
+      const updatedActivity = await updateActivity({
+        id: activityId,
+        name,
+        description,
+      });
+      res.send(updatedActivity);
+    } else {
+      res.send({ message: "Missing fields" });
+    }
+  } catch ({ name, message }) {
+    next({ name, message });
+  }
+});
+
+activityRouter.get("/:activityId/routines", async (req, res, next) => {
+  const { activityId } = req.params;
+
+  try {
+    if (activityId) {
+      const routine = await getPublicRoutinesByActivity({ activityId });
+      res.send(routine);
+    } else {
+      res.send({ message: "Missing fields" });
+    }
+  } catch ({ name, message }) {
+    next({ name, message });
   }
 });
 

@@ -1,20 +1,7 @@
-const express = require("express");
+// const express = require("express");
 
-const activityRouter = express.Router();
+// const routineActivitiesRouter = express.Router();
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-module.exports = {
-    activityRouter,
-}
+// module.exports = {
+//   routineActivitiesRouter,
+// };

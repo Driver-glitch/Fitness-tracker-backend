@@ -1,9 +1,12 @@
+// create an api router
+// attach other routers from files in this api directory (users, activities...)
+// export the api router
 const express = require("express");
 const apiRouter = express.Router();
 const client = require("../db/client");
 const jwt = require("jsonwebtoken");
 const { JWT_SECRET = "neverTell" } = process.env;
-const { getUserByUsername } = require("../db/users");
+const { getUserById } = require("../db/users");
 
 apiRouter.get("/health", async (req, res, next) => {
   try {
@@ -15,7 +18,7 @@ apiRouter.get("/health", async (req, res, next) => {
   }
 });
 
-apiRouter.use("/", async (req, res, next) => {
+apiRouter.use(async (req, res, next) => {
   const auth = req.header("Authorization");
 
   if (!auth) {
@@ -26,12 +29,25 @@ apiRouter.use("/", async (req, res, next) => {
     const token = auth.slice("Bearer ".length);
 
     try {
-      const { username } = verify(token, JWT_SECRET);
+      const parsedToken = jwt.verify(token, JWT_SECRET);
+      console.log(parsedToken, "parsed token");
 
-      if (username) {
-        req.user = await getUserByUsername(username);
-        return next();
+      const id = parsedToken && parsedToken.id;
+      if (id) {
+        req.user = await getUserById(id);
+        next();
       }
+      // const parsedToken = jwt.verify(token, JWT_SECRET);
+      // console.log(parsedToken,'parsed token')
+
+      //   const username = parsedToken && parsedToken.username
+      //   console.log(username, 'userName')
+
+      //   console.log(await getUserByUsername(username), 'user maybe')
+      // if (username) {
+      //   req.user = await getUserByUsername(username);
+      //   return next();
+      // }
     } catch ({ name, message }) {
       next({ name, message });
     }
@@ -40,13 +56,27 @@ apiRouter.use("/", async (req, res, next) => {
   }
 });
 
+apiRouter.use((req, res, next) => {
+  console.log(req.user, "!!!!");
+  if (req.user) {
+    console.log("User is set:", req.user);
+  }
+  next();
+});
+
 const usersRouter = require("./users");
 apiRouter.use("/users", usersRouter);
 
 const activityRouter = require("./activities");
 apiRouter.use("/activities", activityRouter);
 
-apiRouter.use((error, req, res, next) => {
-  res.send(error);
-});
+const routineRouter = require("./routine");
+apiRouter.use("/routines", routineRouter);
+
+// const routineActivitiesRouter = require("./routine_activities");
+// apiRouter.use("/routine_activities", routineActivitiesRouter);
+
+// apiRouter.use((error, req, res, next) => {
+//   res.send(error);
+// });
 module.exports = apiRouter;

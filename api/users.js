@@ -1,19 +1,21 @@
 const express = require("express");
 const usersRouter = express.Router();
 const jwt = require("jsonwebtoken");
-
-const {
-  createUser,
-  getUser,
-  getUserByUsername,
-  getUserById,
-} = require("../db");
+const { createUser, getUser, getUserByUsername } = require("../db/users");
+const { getPublicRoutinesByUser } = require("../db/routines");
 const { JWT_SECRET = "neverTell" } = process.env;
 const { requireUser } = require("./utils");
 
+usersRouter.get("/me", requireUser, async (req, res, next) => {
+  try {
+    res.send(req.user);
+  } catch (error) {
+    next(error);
+  }
+});
+
 usersRouter.post("/login", async (req, res, next) => {
   const { username, password } = req.body;
-  console.log("Hello");
   // request must have both
   if (!username || !password) {
     next({
@@ -37,7 +39,6 @@ usersRouter.post("/login", async (req, res, next) => {
           expiresIn: "1h",
         }
       );
-
       res.send({ user, token, message: "you are logged in!" });
     }
   } catch (error) {
@@ -48,7 +49,9 @@ usersRouter.post("/login", async (req, res, next) => {
 usersRouter.post("/register", async (req, res, next) => {
   try {
     const { username, password } = req.body;
+
     const queriedUser = await getUserByUsername(username);
+
     if (queriedUser) {
       res.status(401);
       next({
@@ -66,7 +69,6 @@ usersRouter.post("/register", async (req, res, next) => {
         username,
         password,
       });
-
       if (!user) {
         next({
           name: "UserCreationError",
@@ -94,18 +96,18 @@ usersRouter.post("/register", async (req, res, next) => {
     next(error);
   }
 });
-usersRouter.get("/me", async (req, res, next) => {
-  const prefix = "Bearer ";
 
+usersRouter.get("/:username/routines", async (req, res, next) => {
+  const { username } = req.params;
   try {
-    if (!req) {
-      return false;
+    if (username) {
+      const publicRoutines = await getPublicRoutinesByUser({ username });
+      res.send(publicRoutines);
+    } else {
+      next({ name: "UsernameError", message: "Missing fields" });
     }
-    const { id } = jwt.verify(token, JWT_SECRET);
-    console.log(id, "<<<<<id<<<<<");
-    getUserById(id);
-  } catch ({ name, message }) {
-    next({ name, message });
+  } catch (error) {
+    next(error);
   }
 });
 
