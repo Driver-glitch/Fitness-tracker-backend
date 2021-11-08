@@ -1,6 +1,7 @@
 const express = require("express");
 const usersRouter = express.Router();
 const jwt = require("jsonwebtoken");
+
 const {
   createUser,
   getUser,
@@ -94,15 +95,18 @@ usersRouter.post("/register", async (req, res, next) => {
   }
 });
 usersRouter.get("/me", async (req, res, next) => {
+  const prefix = "Bearer ";
+
   try {
-    console.log(req, "<<<<<<<<<<<<<<<<<<<<<<<<");
-    if (!token) {
+    if (!req) {
       return false;
     }
-    const routines = await getUserById(req.user.id);
-    res.send(routines);
-  } catch (error) {
-    next(error);
+    const { id } = jwt.verify(token, JWT_SECRET);
+    console.log(id, "<<<<<id<<<<<");
+    getUserById(id);
+  } catch ({ name, message }) {
+    next({ name, message });
   }
 });
+
 module.exports = usersRouter;
