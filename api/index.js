@@ -3,7 +3,7 @@
 // export the api router
 const express = require("express");
 const apiRouter = express.Router();
-const client = require("../db/client");
+
 const jwt = require("jsonwebtoken");
 const { JWT_SECRET = "neverTell" } = process.env;
 const { getUserById } = require("../db/users");
@@ -37,17 +37,6 @@ apiRouter.use(async (req, res, next) => {
         req.user = await getUserById(id);
         next();
       }
-      // const parsedToken = jwt.verify(token, JWT_SECRET);
-      // console.log(parsedToken,'parsed token')
-
-      //   const username = parsedToken && parsedToken.username
-      //   console.log(username, 'userName')
-
-      //   console.log(await getUserByUsername(username), 'user maybe')
-      // if (username) {
-      //   req.user = await getUserByUsername(username);
-      //   return next();
-      // }
     } catch ({ name, message }) {
       next({ name, message });
     }
@@ -57,7 +46,6 @@ apiRouter.use(async (req, res, next) => {
 });
 
 apiRouter.use((req, res, next) => {
-  console.log(req.user, "!!!!");
   if (req.user) {
     console.log("User is set:", req.user);
   }
@@ -76,7 +64,4 @@ apiRouter.use("/routines", routineRouter);
 // const routineActivitiesRouter = require("./routine_activities");
 // apiRouter.use("/routine_activities", routineActivitiesRouter);
 
-// apiRouter.use((error, req, res, next) => {
-//   res.send(error);
-// });
 module.exports = apiRouter;

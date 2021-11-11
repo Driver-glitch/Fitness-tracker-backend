@@ -82,11 +82,16 @@ async function destroyRoutineActivity(id) {
   }
 }
 async function getRoutineActivitiesByRoutine({ id }) {
+  console.log(id, "ID< FRANK and ED");
   try {
     const { rows } = await client.query(`
     SELECT * FROM routine_activities
-    WHERE id=${id};
+    WHERE "routineId"=${id};
     `);
+    console.log(
+      rows,
+      "From getroutineActivityBYRoutine <<<<<<<<<<<<<<<<<<<<<<<<<"
+    );
     return rows;
   } catch (error) {
     throw error;

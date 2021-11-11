@@ -1,11 +1,14 @@
 const express = require("express");
+const { notice } = require("npmlog");
 const routineRouter = express.Router();
 const {
   getAllPublicRoutines,
   createRoutine,
   updateRoutine,
   destroyRoutine,
-} = require("../db/routines");
+  getRoutineActivitiesByRoutine,
+  addActivityToRoutine,
+} = require("../db");
 const { getUserById } = require("../db/users");
 const { requireUser } = require("./utils");
 
@@ -24,7 +27,7 @@ routineRouter.get("/", async (req, res, next) => {
 
 routineRouter.post("/", requireUser, async (req, res, next) => {
   const { name, goal, isPublic } = req.body;
-  console.log(req.user, "user!!!!!!!!!!!!!!!!!!!!!");
+
   const id = req.user.id;
 
   try {
@@ -73,6 +76,47 @@ routineRouter.delete("/:routineId", requireUser, async (req, res, next) => {
   }
 });
 
-routineRouter.post("/:routineId/activities", async (req, res, next) => {});
+routineRouter.post("/:routineId/activities", async (req, res, next) => {
+  try {
+    const { activityId, count, duration } = req.body;
+    const { routineId } = req.params;
+    const result = await getRoutineActivitiesByRoutine({ id: routineId });
+
+    const filteredResults =
+      result &&
+      result.filter((el) => {
+        if (el.activityId === activityId) {
+          return true;
+        } else {
+          return false;
+        }
+      });
+
+    if (filteredResults && filteredResults.length) {
+      next({
+        name: "Routine activity Exist!",
+        message: "This routine activity exists.",
+      });
+    } else {
+      const newPost = await addActivityToRoutine({
+        routineId,
+        activityId,
+        count,
+        duration,
+      });
+
+      if (newPost) {
+        res.send(newPost);
+      } else {
+        next({
+          name: "Failed to add activity to Routine!!",
+          message: `New post does not exist`,
+        });
+      }
+    }
+  } catch (error) {
+    next(error);
+  }
+});
 
 module.exports = routineRouter;
